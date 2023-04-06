@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["mongodb"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Outages {
+  ObjectId String @id @default(auto()) @map("_id") @db.ObjectId
+  id       String
+  begin    String
+  end      String
+}
+
+model Device {
+  id     String    @id @default(auto()) @map("_id") @db.ObjectId
+  name   String
+  site   SiteInfo? @relation(fields: [id], references: [ObjectId])
+  siteId String?   @db.ObjectId
+}
+
+model SiteInfo {
+  ObjectId String   @id @default(auto()) @map("_id") @db.ObjectId
+  id       String
+  name     String
+  begin    String
+  end      String
+  device   Device[]
+}
